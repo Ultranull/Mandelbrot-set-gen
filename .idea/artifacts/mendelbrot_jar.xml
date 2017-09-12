@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="mendelbrot:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/mendelbrot_jar</output-path>
+    <root id="archive" name="mendelbrot.jar">
+      <element id="module-output" name="mendelbrot" />
+    </root>
+  </artifact>
+</component>
