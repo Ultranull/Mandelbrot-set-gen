@@ -29,9 +29,20 @@ public class Fractgen {
         double r, g, b;
         double it;ticks=0;
         if (i < 0) {
-            r = g = b = abs(sin(log(log(zmag)) / log(2)))*128;
+            /*it = ((log((zmag)) / log(2)))*128;
+            r = abs(sin(((double)Interactor.rfreq.getValue()) * it +
+                    ((double)Interactor.rshft.getValue())+ticks/6.0))*
+                    ((double)Interactor.rbrt.getValue());
+            g = abs(sin(((double)Interactor.gfreq.getValue()) * it +
+                    ((double)Interactor.gshft.getValue())+ticks/6.0))*
+                    ((double)Interactor.gbrt.getValue());
+            b = abs(sin(((double)Interactor.bfreq.getValue()) * it +
+                    ((double)Interactor.bshft.getValue())+ticks/6.0))*
+                    ((double)Interactor.bbrt.getValue());*/
+             r = g = b = (abs((ticks+log((zmag)) / log(2)))/255)*255*2;
+            r=g=b=(r>255)?255:r;
         } else {
-            it = i + 1 - (log(log(zmag)) / log(2));
+            it =( i + 1 - (log(log(zmag)) / log(2)));
             r = abs(sin(((double)Interactor.rfreq.getValue()) * it +
                     ((double)Interactor.rshft.getValue())+ticks/6.0))*
                     ((double)Interactor.rbrt.getValue());
@@ -68,12 +79,12 @@ public class Fractgen {
         double cx=x1,cy=y1;
         double zx=x,zy=y;
         while(zx*zx+zy*zy <= 4&&it[0]<max){
+            it[0]++;
             double x_new = zx*zx - zy*zy + cx;
             zy = 2*zx*zy + cy;
             zx = x_new;
             if(Interactor.swapset.getModel().isSelected())
                 zx=javaswap(zy,zy=zx);
-            it[0]++;
         }
         return zx*zx+zy*zy;
     }

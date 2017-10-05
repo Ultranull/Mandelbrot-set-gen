@@ -49,12 +49,12 @@ public class Interactor {
     }
     private static JPanel ColorSettings_Init(){
         JPanel colorset=new JPanel(new GridLayout(9,2));
-        rfreq=new JSpinner(new SpinnerNumberModel(0.0,0.0,0xffd,0.01));
-        rshft=new JSpinner(new SpinnerNumberModel(0.0,0.0,0xffd,0.1));
-        gfreq=new JSpinner(new SpinnerNumberModel(0.0,0.0,0xffd,0.01));
-        gshft=new JSpinner(new SpinnerNumberModel(0.0,0.0,0xffd,0.1));
-        bfreq=new JSpinner(new SpinnerNumberModel(0.0,0.0,0xffd,0.01));
-        bshft=new JSpinner(new SpinnerNumberModel(0.0,0.0,0xffd,0.1));
+        rfreq=new JSpinner(new SpinnerNumberModel(0.0,-0xffd,0xffd,0.01));
+        rshft=new JSpinner(new SpinnerNumberModel(0.0,-0xffd,0xffd,0.1));
+        gfreq=new JSpinner(new SpinnerNumberModel(0.0,-0xffd,0xffd,0.01));
+        gshft=new JSpinner(new SpinnerNumberModel(0.0,-0xffd,0xffd,0.1));
+        bfreq=new JSpinner(new SpinnerNumberModel(0.0,-0xffd,0xffd,0.01));
+        bshft=new JSpinner(new SpinnerNumberModel(0.0,-0xffd,0xffd,0.1));
         rbrt=new JSpinner(new SpinnerNumberModel(200.0,0.0,255,1));
         gbrt=new JSpinner(new SpinnerNumberModel(200.0,0.0,255,1));
         bbrt=new JSpinner(new SpinnerNumberModel(200.0,0.0,255,1));
