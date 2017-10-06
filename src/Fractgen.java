@@ -67,7 +67,7 @@ public class Fractgen {
         double zx=0,zy=0;
         while(zx*zx+zy*zy <= 4&&it[0]<max){
             double x_new = zx*zx - zy*zy + cx;
-            zy = 2*zx*zy + cy;
+            zy = (double)Interactor.rfreq.getValue()*zx*zy + cy;
             zx = x_new;
             if(Interactor.swapset.getModel().isSelected())
                 zx=javaswap(zy,zy=zx);
