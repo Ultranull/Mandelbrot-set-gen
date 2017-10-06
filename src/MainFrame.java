@@ -33,7 +33,7 @@ public class MainFrame extends JPanel {
         g.drawImage(gen.map,0,0,getWidth(),getHeight(),null);
         g.setColor(new Color(0xFFFFFF));
         g.drawString(rot+"",getWidth()/2,getHeight()/2);
-        gen.pos=rot;//new Point(Math.cos(ticks/1.0*Math.PI/180)*rot.x,Math.sin(ticks/1.0*Math.PI/180)*rot.y);
+        gen.pos=new Point(Math.cos(ticks/1.0*Math.PI/180)*rot.x,Math.sin(ticks/1.0*Math.PI/180)*rot.y);
         gen.generate(ticks);
 
         if(Interactor.save.getModel().isPressed()){
