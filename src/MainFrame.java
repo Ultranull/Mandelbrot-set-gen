@@ -25,6 +25,7 @@ public class MainFrame extends JPanel {
     }
     @Override
     protected void paintComponent(Graphics g) {
+        Interactor.set_all();
         super.paintComponent(g);
         if(clear){
             gen.clear();
@@ -50,7 +51,7 @@ public class MainFrame extends JPanel {
         ticks+=1;
     }
 
-    Point rot=new Point(0,0);
+    Complex rot=new Complex();
     private class KeyA extends KeyAdapter{
         @Override
         public void keyPressed(KeyEvent e) {

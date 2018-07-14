@@ -13,45 +13,51 @@ public class Fractgen {
     public int Height,Width;
     public double zoom;
     public int maxiter;
-    public Point pos,jpos;
+    public Complex pos,jpos;
     public boolean julia=false;
 
     public Fractgen(){
         Height=Width=200;
         zoom=1;
         maxiter=100;
-        pos=new Point(0,0);
-        jpos=new Point(0,0);
+        pos=new Complex();
+        jpos=new Complex();
         map=new BufferedImage(Width,Height,BufferedImage.TYPE_4BYTE_ABGR);
+    }
+    private double sigmoid(double x){
+        return 1/(1+pow(E,-x));
     }
     private void draw(int x,int y,int h,int w,int i,double zmag,int ticks) {
         //if(i<=5&&i>-1)return;
         double r, g, b;
         double it;ticks=0;
         if (i < 0) {
-            /*it = ((log((zmag)) / log(2)))*128;
-            r = abs(sin(((double)Interactor.rfreq.getValue()) * it +
-                    ((double)Interactor.rshft.getValue())+ticks/6.0))*
-                    ((double)Interactor.rbrt.getValue());
-            g = abs(sin(((double)Interactor.gfreq.getValue()) * it +
-                    ((double)Interactor.gshft.getValue())+ticks/6.0))*
-                    ((double)Interactor.gbrt.getValue());
-            b = abs(sin(((double)Interactor.bfreq.getValue()) * it +
-                    ((double)Interactor.bshft.getValue())+ticks/6.0))*
-                    ((double)Interactor.bbrt.getValue());*/
+            it = ((log((zmag)) / log(2)))*120.0d;
+//            r = abs(sin( 0.0023* it +0.007))*255;
+//            g = abs(sin( 0.001* it +0.006))*255;
+//            b = abs(sin( 0.003* it +0.0045))*255;
              r = g = b = (abs((ticks+log((zmag)) / log(2)))/255)*255*2;
             r=g=b=(r>255)?255:r;
         } else {
-            it =( i + 1 - (log(log(zmag)) / log(2)));
-            r = abs(sin(((double)Interactor.rfreq.getValue()) * it +
-                    ((double)Interactor.rshft.getValue())+ticks/6.0))*
+            if(Interactor.smooth.isSelected())
+                it =( i + 1 - log(log(abs(zmag)) / log(30)));
+            else
+                it=i;
+            double fre=ticks/10;
+            r = abs(sin(((double)Interactor.rfreq.getValue()+fre) * it +
+                    ((double)Interactor.rshft.getValue()*0)))*
                     ((double)Interactor.rbrt.getValue());
-            g = abs(sin(((double)Interactor.gfreq.getValue()) * it +
-                    ((double)Interactor.gshft.getValue())+ticks/6.0))*
+            g = abs(sin(((double)Interactor.gfreq.getValue()+fre) * it +
+                    ((double)Interactor.gshft.getValue())))*
                     ((double)Interactor.gbrt.getValue());
-            b = abs(sin(((double)Interactor.bfreq.getValue()) * it +
-                    ((double)Interactor.bshft.getValue())+ticks/6.0))*
+            b = abs(sin(((double)Interactor.bfreq.getValue()+fre) * it +
+                    ((double)Interactor.bshft.getValue())))*
                     ((double)Interactor.bbrt.getValue());
+            Color c=new Color(Color.HSBtoRGB(0.95f + 0.1f * (float)zmag ,0.6f,1.0f));
+            r=c.getRed();
+            g=c.getGreen();
+            b=c.getBlue();
+
 
         }
         Graphics gl=map.getGraphics();
@@ -59,34 +65,29 @@ public class Fractgen {
         gl.fillRect(x,y,h,w);
 
     }
-    private double javaswap(double itself,double dummy){
-        return itself;
-    }
     double inmandel(int[] it,double x,double y,int max){
-        double cx=x,cy=y;
-        double zx=0,zy=0;
-        while(zx*zx+zy*zy <= 4&&it[0]<max){
-            double x_new = zx*zx - zy*zy + cx;
-            zy = (double)Interactor.rfreq.getValue()*zx*zy + cy;
-            zx = x_new;
+        Complex z=new Complex(),c=new Complex(x,y);
+        double smoothcolor = Math.exp(-z.mag());
+        while(z.mag() <= 30&&it[0]<max){
+            z=z.pow((int)Interactor.order.getValue()).add(c);
             if(Interactor.swapset.getModel().isSelected())
-                zx=javaswap(zy,zy=zx);
+                z=z.swap();
             it[0]++;
+            smoothcolor += Math.exp(-z.mag());
         }
-        return zx*zx+zy*zy;
+        return smoothcolor;
     }
     double injulia(int[] it,double x,double y,double x1,double y1,int max){
-        double cx=x1,cy=y1;
-        double zx=x,zy=y;
-        while(zx*zx+zy*zy <= 4&&it[0]<max){
+        Complex z=new Complex(x,y),c=new Complex(x1,y1);
+        double smoothcolor = Math.exp(-z.mag());
+        while(z.mag() <= 4&&it[0]<max){
             it[0]++;
-            double x_new = zx*zx - zy*zy + cx;
-            zy = 2*zx*zy + cy;
-            zx = x_new;
+            z=z.pow((int)Interactor.order.getValue()).add(c);
             if(Interactor.swapset.getModel().isSelected())
-                zx=javaswap(zy,zy=zx);
+                z=z.swap();
+            smoothcolor += Math.exp(-z.mag());
         }
-        return zx*zx+zy*zy;
+        return smoothcolor;
     }
     void genpart(int ticks,Point xb,Point yb){
         for(int x=(int)xb.x;x<xb.y;x++){
@@ -110,11 +111,12 @@ public class Fractgen {
 
     }
     public void generate(int ticks){
+
         maxiter=Interactor.maxiter.getValue();
         julia=Interactor.julia.getModel().isSelected();
         long t=System.currentTimeMillis();
         genpart(ticks,new Point(0,Width), new Point(0, Height));
-        System.out.println(System.currentTimeMillis()-t);
+       // System.out.println(System.currentTimeMillis()-t);
     }
     void setDem(int h,int w){
         Width=w;Height=h;
